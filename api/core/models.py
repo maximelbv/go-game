@@ -20,7 +20,7 @@ class ProblemAttempt(models.Model):
 
 class Game(models.Model):
     sgf_data = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     result = models.CharField(max_length=50, blank=True, null=True)
     date_played = models.DateTimeField(auto_now_add=True)
 
