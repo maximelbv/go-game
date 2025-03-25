@@ -11,57 +11,60 @@ import SettingsPage from "./pages/SettingsPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import { UserProvider } from "./providers/UserProvider";
 import { RequireAuth } from "./helpers/route-helpers";
+import { Provider } from "./components/ui/provider";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <UserProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="*" element={<Navigate to="/" replace />} />
-          <Route
-            path="/"
-            element={
-              <RequireAuth>
-                <HomePage />
-              </RequireAuth>
-            }
-          />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route
-            path="/play"
-            element={
-              <RequireAuth>
-                <PlayPage />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <RequireAuth>
-                <DashboardPage />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <RequireAuth>
-                <SettingsPage />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/admin"
-            element={
-              <RequireAuth>
-                <AdminDashboardPage />
-              </RequireAuth>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
-    </UserProvider>
+    <Provider>
+      <UserProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route
+              path="/"
+              element={
+                <RequireAuth>
+                  <HomePage />
+                </RequireAuth>
+              }
+            />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route
+              path="/play"
+              element={
+                <RequireAuth>
+                  <PlayPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <RequireAuth>
+                  <DashboardPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <RequireAuth>
+                  <SettingsPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <RequireAuth>
+                  <AdminDashboardPage />
+                </RequireAuth>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </UserProvider>
+    </Provider>
   </StrictMode>
 );
