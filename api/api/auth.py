@@ -52,7 +52,9 @@ def register_user(request):
                 email=data['email'],
                 password=data['password'],
                 first_name=data.get('first_name', ''),
-                last_name=data.get('last_name', '')
+                last_name=data.get('last_name', ''),
+                is_staff=data.get('is_staff', False),
+                is_superuser=data.get('is_superuser', False)
             )
             
             UserProfile.objects.create(

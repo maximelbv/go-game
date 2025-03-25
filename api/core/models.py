@@ -5,6 +5,8 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     level = models.CharField(max_length=50, default='Débutant')
     rating = models.IntegerField(default=0)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
 class Problem(models.Model):
     title = models.CharField(max_length=255)
