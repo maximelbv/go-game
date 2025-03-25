@@ -24,10 +24,18 @@ interface LoginCredentials {
   password: string;
 }
 
+interface RegisterCredentials {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
 interface UserContextType {
   user: User | null;
   loading: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
+  register: (credentials: RegisterCredentials) => Promise<void>;
   logout: () => void;
 }
 
@@ -49,7 +57,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await axios.get<User>(`${API_BASE_URL}/user-profiles/`);
+      const response = await axios.get<User>(`${API_BASE_URL}/users/me/`);
       setUser(response.data);
     } catch {
       logout();
@@ -69,6 +77,28 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     await fetchUserProfile();
   };
 
+  const register = async (credentials: RegisterCredentials) => {
+    if (credentials.password !== credentials.confirmPassword) {
+      throw new Error("Passwords do not match");
+    }
+    try {
+      const response = await axios.post<AuthResponse>(
+        `${API_BASE_URL}/api/register/`,
+        {
+          username: credentials.username,
+          email: credentials.email,
+          password: credentials.password,
+        }
+      );
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+      axios.defaults.headers.common["Authorization"] = `Token ${token}`;
+      await fetchUserProfile();
+    } catch (err) {
+      throw new Error("Registration failed. Please try again.", err);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("token");
     axios.defaults.headers.common["Authorization"] = "";
@@ -76,7 +106,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, loading, login, logout }}>
+    <UserContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </UserContext.Provider>
   );

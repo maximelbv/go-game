@@ -2,8 +2,9 @@ from rest_framework import viewsets
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsSuperUser, IsStaffUser
-
+from rest_framework.decorators import action
 from core.models import UserProfile, Problem, ProblemAttempt, Game, GameStatistics
+from rest_framework.response import Response
 from api.serializers import (
     UserSerializer, UserProfileSerializer, ProblemSerializer, 
     ProblemAttemptSerializer, GameSerializer, GameStatisticsSerializer
@@ -24,10 +25,15 @@ class UserViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
 
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def me(self, request):
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
+
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    
+
     def get_permissions(self):
         if self.action == 'list':
             permission_classes = [IsSuperUser]
@@ -38,6 +44,12 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
+
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def me(self, request):
+        user_profile = UserProfile.objects.get(user=request.user)
+        serializer = self.get_serializer(user_profile)
+        return Response(serializer.data)
 
 class ProblemViewSet(viewsets.ModelViewSet):
     queryset = Problem.objects.all()
