@@ -12,10 +12,10 @@ from api.serializers import (
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    
+
     def get_permissions(self):
         if self.action == 'list':
-            permission_classes = [IsSuperUser]
+            permission_classes = [IsSuperUser | IsStaffUser]
         elif self.action in ['create', 'destroy']:
             permission_classes = [IsSuperUser]
         elif self.action in ['retrieve', 'update', 'partial_update']:
