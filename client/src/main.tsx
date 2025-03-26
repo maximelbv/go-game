@@ -11,6 +11,7 @@ import SettingsPage from "./pages/SettingsPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import { UserProvider } from "./providers/UserProvider";
 import { RequireAuth } from "./helpers/route-helpers";
+import MainLayout from "./layouts/MainLayout";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -22,7 +23,9 @@ createRoot(document.getElementById("root")!).render(
             path="/"
             element={
               <RequireAuth>
-                <HomePage />
+                <MainLayout>
+                  <HomePage />
+                </MainLayout>
               </RequireAuth>
             }
           />
@@ -32,7 +35,9 @@ createRoot(document.getElementById("root")!).render(
             path="/play"
             element={
               <RequireAuth>
-                <PlayPage />
+                <MainLayout>
+                  <PlayPage />
+                </MainLayout>
               </RequireAuth>
             }
           />
@@ -40,7 +45,9 @@ createRoot(document.getElementById("root")!).render(
             path="/dashboard"
             element={
               <RequireAuth>
-                <DashboardPage />
+                <MainLayout>
+                  <DashboardPage />
+                </MainLayout>
               </RequireAuth>
             }
           />
@@ -48,7 +55,9 @@ createRoot(document.getElementById("root")!).render(
             path="/settings"
             element={
               <RequireAuth>
-                <SettingsPage />
+                <MainLayout>
+                  <SettingsPage />
+                </MainLayout>
               </RequireAuth>
             }
           />
@@ -56,7 +65,9 @@ createRoot(document.getElementById("root")!).render(
             path="/admin"
             element={
               <RequireAuth>
-                <AdminDashboardPage />
+                <MainLayout>
+                  <AdminDashboardPage />
+                </MainLayout>
               </RequireAuth>
             }
           />

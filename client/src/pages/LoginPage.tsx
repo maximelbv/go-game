@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import axios from "axios";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -43,15 +42,8 @@ export default function LoginPage() {
       await login({ username, password });
       navigate("/");
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else if (axios.isAxiosError(err) && err.response) {
-        setError(
-          err.response.data.detail || "Invalid credentials. Please try again."
-        );
-      } else {
-        setError("Login failed. Please try again.");
-      }
+      console.error(err);
+      setError(`Login failed. Please try again.`);
     } finally {
       setIsSubmitting(false);
     }
