@@ -11,7 +11,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.throttling import AnonRateThrottle
 
 class RegisterThrottle(AnonRateThrottle):
-    rate = '5/hour'
+    rate = '10/hour'
 
 @api_view(['POST'])
 @permission_classes([AllowAny])

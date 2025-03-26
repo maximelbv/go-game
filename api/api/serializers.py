@@ -3,9 +3,18 @@ from django.contrib.auth.models import User
 from core.models import UserProfile, Problem, ProblemAttempt, Game, GameStatistics
 
 class UserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField()
+
     class Meta:
         model = User
         fields = ['id', 'username', 'email']
+
+    def validate_email(self, value):
+        try:
+            validate_email(value)
+        except ValidationError:
+            raise serializers.ValidationError("L'adresse email n'est pas valide.")
+        return value
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()

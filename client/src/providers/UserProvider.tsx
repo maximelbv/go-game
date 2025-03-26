@@ -95,7 +95,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       axios.defaults.headers.common["Authorization"] = `Token ${token}`;
       await fetchUserProfile();
     } catch (err) {
-      throw new Error("Registration failed. Please try again.", err);
+      throw new Error(`Registration failed. Please try again. ${err}`);
     }
   };
 
