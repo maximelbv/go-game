@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useTsumegoAttempt } from "../providers/TsumegoAttemptProvider";
 
 interface TsumegoData {
   C: string;
@@ -10,6 +11,7 @@ interface TsumegoData {
 
 interface TsumegoBoardProps {
   data: TsumegoData;
+  tsumegoId: number;
   onSolve?: (correct: boolean) => void;
 }
 
@@ -29,7 +31,11 @@ const indicesToSgf = (x: number, y: number): string => {
   );
 };
 
-const TsumegoBoard: React.FC<TsumegoBoardProps> = ({ data, onSolve }) => {
+const TsumegoBoard: React.FC<TsumegoBoardProps> = ({
+  data,
+  tsumegoId,
+  onSolve,
+}) => {
   const boardSize = Number.parseInt(data.SZ) || 19;
   const [board, setBoard] = useState<Array<Array<string>>>(
     Array(boardSize)
@@ -41,8 +47,12 @@ const TsumegoBoard: React.FC<TsumegoBoardProps> = ({ data, onSolve }) => {
   const [gameState, setGameState] = useState<"playing" | "solved" | "failed">(
     "playing"
   );
+  const [attemptId, setAttemptId] = useState<number | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [firstMoveMade, setFirstMoveMade] = useState<boolean>(false);
+  const { createOrUpdateAttempt } = useTsumegoAttempt();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const newBoard = Array(boardSize)
       .fill(null)
       .map(() => Array(boardSize).fill(""));
@@ -67,32 +77,62 @@ const TsumegoBoard: React.FC<TsumegoBoardProps> = ({ data, onSolve }) => {
     setGameState("playing");
   }, [data, boardSize]);
 
-  const handleCellClick = (x: number, y: number) => {
+  const handleCellClick = async (x: number, y: number) => {
     if (gameState !== "playing" || board[y][x] !== "") return;
 
     const moveCoord = indicesToSgf(x, y);
     const isCorrectMove = data.SOL.some((sol) => sol[1] === moveCoord);
+
+    if (!firstMoveMade) {
+      setFirstMoveMade(true);
+      try {
+        const isSolvedOnFirstMove = isCorrectMove && data.SOL.length === 1;
+        const attempt = await createOrUpdateAttempt(
+          tsumegoId,
+          isSolvedOnFirstMove
+        );
+        if (attempt?.is_solved) {
+          setMessage("This problem is already solved!");
+          setGameState("solved");
+          return;
+        }
+        setAttemptId(attempt?.id);
+      } catch (error) {
+        console.error("Error creating/updating attempt", error);
+      }
+    }
 
     if (isCorrectMove) {
       const newBoard = [...board];
       newBoard[y][x] = "B";
       setBoard(newBoard);
 
-      // Add to user moves
       const newUserMoves = [...userMoves, moveCoord];
       setUserMoves(newUserMoves);
 
       if (newUserMoves.length === data.SOL.length) {
         setMessage("Correct! Problem solved.");
         setGameState("solved");
-        onSolve && onSolve(true);
+        await handleSolve(true);
+        if (onSolve) onSolve(true);
       } else {
         setMessage("Correct move! Continue...");
       }
     } else {
       setMessage("Incorrect move. Try again.");
       setGameState("failed");
-      onSolve && onSolve(false);
+      if (onSolve) onSolve(false);
+    }
+  };
+
+  const handleSolve = async (isSolved: boolean) => {
+    try {
+      setLoading(true);
+      await createOrUpdateAttempt(tsumegoId, isSolved);
+    } catch (error) {
+      console.error("Error updating attempt", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -284,7 +324,7 @@ const TsumegoBoard: React.FC<TsumegoBoardProps> = ({ data, onSolve }) => {
               }
             }}
           >
-            Hint
+            Show Hint
           </button>
         )}
       </div>

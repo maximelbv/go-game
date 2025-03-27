@@ -1,10 +1,12 @@
 import { useParams } from "react-router";
 import { useTsumego } from "../providers/TsumegoProvider";
 import TsumegoBoard from "../components/TsumegoBoard";
+import { useUser } from "../providers/UserProvider";
 
 const TsumegoDetailPage = () => {
   const { id } = useParams();
   const { tsumegos, loading } = useTsumego();
+  const { user } = useUser();
 
   if (loading) return <p>Loading...</p>;
 
@@ -15,7 +17,7 @@ const TsumegoDetailPage = () => {
   return (
     <div className="flex flex-col items-center justify-center py-10">
       <h1 className="text-2xl text-bold">{tsumego.title}</h1>
-      <TsumegoBoard data={tsumego.json_data} />
+      {user && <TsumegoBoard data={tsumego.json_data} tsumegoId={tsumego.id} />}
     </div>
   );
 };

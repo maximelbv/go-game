@@ -74,10 +74,28 @@ class ProblemAttemptViewSet(viewsets.ModelViewSet):
         elif self.action in ['create', 'retrieve']:
             permission_classes = [IsAuthenticated]
         elif self.action in ['update', 'partial_update', 'destroy']:
-            permission_classes = [IsStaffUser]
+            permission_classes = [IsAuthenticated]
         else:
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
+    
+    def update(self, request, *args, **kwargs):
+        problem_attempt = self.get_object()
+
+        if problem_attempt.user != request.user:
+            raise PermissionDenied("Vous n'êtes pas autorisé à modifier cette tentative.")
+        
+        serializer = self.get_serializer(problem_attempt, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def me(self, request):
+        problem_attempts = ProblemAttempt.objects.filter(user=request.user)
+        serializer = self.get_serializer(problem_attempts, many=True)
+        return Response(serializer.data)
 
 class GameViewSet(viewsets.ModelViewSet):
     queryset = Game.objects.all()
