@@ -6,12 +6,11 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import PlayPage from "./pages/PlayPage";
-import DashboardPage from "./pages/DashboardPage";
-import SettingsPage from "./pages/SettingsPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import { UserProvider } from "./providers/UserProvider";
 import { RequireAuth } from "./helpers/route-helpers";
 import MainLayout from "./layouts/MainLayout";
+import LandingPage from "./pages/LandingPage";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -29,6 +28,14 @@ createRoot(document.getElementById("root")!).render(
               </RequireAuth>
             }
           />
+          <Route
+            path="/welcome"
+            element={
+              <MainLayout>
+                <LandingPage />
+              </MainLayout>
+            }
+          />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route
@@ -37,26 +44,6 @@ createRoot(document.getElementById("root")!).render(
               <RequireAuth>
                 <MainLayout>
                   <PlayPage />
-                </MainLayout>
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <RequireAuth>
-                <MainLayout>
-                  <DashboardPage />
-                </MainLayout>
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <RequireAuth>
-                <MainLayout>
-                  <SettingsPage />
                 </MainLayout>
               </RequireAuth>
             }

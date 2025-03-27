@@ -12,6 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 import { useUser } from "../providers/UserProvider";
 import { Link } from "react-router";
+import { Button } from "@mui/material";
 
 const pages = [
   {
@@ -21,16 +22,6 @@ const pages = [
   {
     name: "Tsumego",
     nav: "/tsumego",
-  },
-  {
-    name: "Dashboard",
-    nav: "/dashboard",
-  },
-];
-const settings = [
-  {
-    name: "Account",
-    nav: "/settings",
   },
 ];
 
@@ -79,7 +70,7 @@ function Header() {
                 textDecoration: "none",
               }}
             >
-              GO GAME
+              GO GAME PLATFORM
             </Typography>
           </Link>
 
@@ -110,15 +101,16 @@ function Header() {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: "block", md: "none" } }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                  <Link to={`${page.nav}`}>
-                    <Typography sx={{ textAlign: "center" }}>
-                      {page.name}
-                    </Typography>
-                  </Link>
-                </MenuItem>
-              ))}
+              {user &&
+                pages.map((page) => (
+                  <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                    <Link to={`${page.nav}`}>
+                      <Typography sx={{ textAlign: "center" }}>
+                        {page.name}
+                      </Typography>
+                    </Link>
+                  </MenuItem>
+                ))}
             </Menu>
           </Box>
           <Link to={"/"} className="flex justify-center items-center">
@@ -139,7 +131,7 @@ function Header() {
                 textDecoration: "none",
               }}
             >
-              GO GAME
+              GO GAME PLATFORM
             </Typography>
           </Link>
 
@@ -150,52 +142,53 @@ function Header() {
               display: { xs: "none", md: "flex" },
             }}
           >
-            {pages.map((page) => (
-              <Link to={`${page.nav}`}>
-                <Typography sx={{ textAlign: "center" }}>
-                  {page.name}
-                </Typography>
-              </Link>
-            ))}
-          </Box>
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <div className="rounded-full bg-gray-400 w-10 h-10 flex items-center justify-center text-gray-50">
-                  {user?.username[0].toUpperCase()}
-                </div>
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
-                  <Link to={setting.nav}>
-                    <Typography sx={{ textAlign: "center" }}>
-                      {setting.name}
-                    </Typography>
-                  </Link>
-                </MenuItem>
+            {user &&
+              pages.map((page) => (
+                <Link to={`${page.nav}`}>
+                  <Typography sx={{ textAlign: "center" }}>
+                    {page.name}
+                  </Typography>
+                </Link>
               ))}
-              <MenuItem key={"log out"} onClick={() => logout()}>
-                Log out
-              </MenuItem>
-            </Menu>
           </Box>
+          {user && (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <div className="rounded-full bg-gray-400 w-10 h-10 flex items-center justify-center text-gray-50">
+                    {user?.username[0].toUpperCase()}
+                  </div>
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem key={"log out"} onClick={() => logout()}>
+                  Log out
+                </MenuItem>
+              </Menu>
+            </Box>
+          )}
+          {!user && (
+            <Link to={"/login"}>
+              <Button sx={{ background: "#fff", color: "#1876D2" }}>
+                Log in
+              </Button>
+            </Link>
+          )}
         </Toolbar>
       </Container>
     </AppBar>
