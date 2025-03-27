@@ -12,6 +12,7 @@ interface User {
   id: number;
   username: string;
   email: string;
+  is_staff: string;
 }
 
 interface AuthResponse {
@@ -36,6 +37,7 @@ interface UserContextType {
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (credentials: RegisterCredentials) => Promise<void>;
   logout: () => void;
+  getAllUsers: () => Promise<User[]>;
 }
 
 const UserContext = createContext<UserContextType | null>(null);
@@ -104,8 +106,19 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
   };
 
+  const getAllUsers = async (): Promise<User[]> => {
+    try {
+      const response = await axios.get<User[]>(`${API_BASE_URL}/users/`);
+      return response.data;
+    } catch (err) {
+      throw new Error(`Failed to fetch users. ${err}`);
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ user, loading, login, register, logout }}>
+    <UserContext.Provider
+      value={{ user, loading, login, register, logout, getAllUsers }}
+    >
       {children}
     </UserContext.Provider>
   );

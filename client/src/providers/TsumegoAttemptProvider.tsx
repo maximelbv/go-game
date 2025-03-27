@@ -115,7 +115,7 @@ export const TsumegoAttemptProvider = ({
 
   useEffect(() => {
     fetchUserAttempts();
-  }, []);
+  }, [user]);
 
   return (
     <TsumegoAttemptContext.Provider

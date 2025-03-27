@@ -12,7 +12,7 @@ const Header: React.FC = () => {
   const handleLogout = () => {
     logout();
   };
-
+  console.log(user);
   return (
     <AppBar position="static" className="bg-white shadow-md">
       <Container maxWidth="lg">
@@ -23,6 +23,7 @@ const Header: React.FC = () => {
               <span className="ml-2 text-xl font-bold">GoGamePlatform</span>
             </Box>
           </Link>
+          {user && user.is_staff && <Link to="/admin">Admin Dashboard</Link>}
 
           <Box>
             {user ? (

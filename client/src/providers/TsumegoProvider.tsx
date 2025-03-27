@@ -7,6 +7,7 @@ import {
 } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../constants/api-constants";
+import { useUser } from "./UserProvider";
 
 interface Tsumego {
   id: number;
@@ -33,10 +34,11 @@ const TsumegoContext = createContext<TsumegoContextType | null>(null);
 export const TsumegoProvider = ({ children }: { children: ReactNode }) => {
   const [tsumegos, setTsumegos] = useState<Tsumego[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { user } = useUser();
 
   useEffect(() => {
     fetchTsumegos();
-  }, []);
+  }, [user]);
 
   const fetchTsumegos = async () => {
     setLoading(true);
