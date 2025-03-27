@@ -257,7 +257,6 @@ const TsumegoBoard: React.FC<TsumegoBoardProps> = ({ data, onSolve }) => {
 
   return (
     <div className="flex flex-col items-center">
-      <h2 className="text-xl font-bold mb-2">Tsumego Problem</h2>
       <p className="mb-4">{message}</p>
 
       <div className="mb-4">{renderCoordinates()}</div>
