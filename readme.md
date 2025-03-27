@@ -67,6 +67,7 @@ cd api
    CREATE DATABASE go_game_db;
    ```
 3. Update your env variables. you can find an example in the `.env.example` file
+4. You can get games sgf data and json tsumego data by running the import_sgf.py and import_tsumego.py scripts in the core module
 
 ## Frontend Setup
 
